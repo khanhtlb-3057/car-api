@@ -1,5 +1,5 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from "@nestjs/common";
-import { EntityNotFoundError } from "typeorm";
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
+import { EntityNotFoundError } from 'typeorm';
 
 @Catch(EntityNotFoundError)
 export class EntityNotFoundExceptionFilter implements ExceptionFilter<EntityNotFoundError> {
