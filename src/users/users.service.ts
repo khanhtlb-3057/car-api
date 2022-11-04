@@ -1,12 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { authError } from '../errors/constants/auth.constant';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
+import { hash } from '../common/utils/bcrypt.ultil';
 
 @Injectable()
-export class UserService {
+export class UsersService {
 
   constructor(
     @InjectRepository(User)
@@ -22,6 +24,14 @@ export class UserService {
   }
 
   async save(userDto: CreateUserDto) {
+    const user = this.userRepository.findOneBy({ email: userDto.email });
+
+    if (typeof user !== 'undefined') {
+      throw new BadRequestException(authError.isExistEmail);
+    }
+
+    userDto.password = await hash(userDto.password);
+
     return await this.userRepository.save(userDto);
   }
 

@@ -1,11 +1,12 @@
 import { Report } from '../report/report.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index("users_email")
   @Column('varchar', {
     nullable: false,
     unique: true,
