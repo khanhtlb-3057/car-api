@@ -20,13 +20,19 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    return await this.userRepository.findOneByOrFail({ id });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.reports', 'report')
+      .where('user.id= :id', {id})
+      .getOne();
+
+    return user;
   }
 
   async save(userDto: CreateUserDto) {
-    const user = this.userRepository.findOneBy({ email: userDto.email });
+    const user = await this.userRepository.findOneBy({ email: userDto.email });
 
-    if (typeof user !== 'undefined') {
+    if (user !== null) {
       throw new BadRequestException(authError.isExistEmail);
     }
 
