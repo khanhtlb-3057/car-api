@@ -1,18 +1,16 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, NotFoundException, Param, ParseIntPipe, Patch, Post, Put, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
-import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
-import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 
 @UseGuards(RolesGuard)
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(
-    private userService: UserService
+    private userService: UsersService
   ){}
 
   @Get()
