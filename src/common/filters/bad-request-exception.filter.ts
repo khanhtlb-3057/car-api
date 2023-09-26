@@ -1,7 +1,8 @@
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
+import { getI18nContextFromArgumentsHost } from 'nestjs-i18n';
+
 import { commonError } from '../../errors/constants/common.constant';
-import data from '../../errors/data';
 import { Error } from '../types/error.type';
 
 type Constraint = {
@@ -23,6 +24,7 @@ export class BadRequestExceptionFilter implements ExceptionFilter<BadRequestExce
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const exceptionRes = exception.getResponse() as ExceptionRes | Error;
+    const i18n = getI18nContextFromArgumentsHost(host);
     const status = exception.getStatus();
     const errors: Error[] = [];
 
@@ -38,7 +40,7 @@ export class BadRequestExceptionFilter implements ExceptionFilter<BadRequestExce
               .resource,
             field: property,
             code,
-            message: data[code],
+            message: i18n.t(`${code}`),
           });
           return arr;
         }, []),
@@ -50,7 +52,7 @@ export class BadRequestExceptionFilter implements ExceptionFilter<BadRequestExce
         resource,
         field,
         code,
-        message: data[code],
+        message: i18n.t(`${code}`),
       });
     }
 
